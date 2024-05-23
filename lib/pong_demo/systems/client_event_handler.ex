@@ -30,6 +30,17 @@ defmodule PongDemo.Systems.ClientEventHandler do
     PlayerSpawned.add(player)
   end
 
+  defp process_one({player, :spawn_cpu_paddle}) do
+    # paddles only move vertically, so they don't need an XVelocity
+    XPosition.add(player, 88)
+    YPosition.add(player, 25)
+    YVelocity.add(player, 0)
+    YSize.add(player, 5)
+
+    ImageFile.add(player, "paddle.svg")
+    PlayerSpawned.add(player)
+  end
+
   defp process_one({ball, :spawn_ball}) do
     x_velocity = Enum.random([-1, 1])
     y_velocity = Enum.random([-1, 1])

@@ -11,11 +11,13 @@ defmodule PongDemoWeb.GameLive do
     game_world_width = Application.fetch_env!(:pong_demo, :game_world_width)
     game_world_height = Application.fetch_env!(:pong_demo, :game_world_height)
     player = %{id: Ecto.UUID.generate()}
+    cpu = %{id: Ecto.UUID.generate()}
     ball_entity_id = Ecto.UUID.generate()
 
     socket =
       socket
       |> assign(player_entity: player.id)
+      |> assign(cpu_entity: cpu.id)
       |> assign(ball_entity: ball_entity_id)
       |> assign(keys: MapSet.new())
       |> assign(screen_height: game_world_height, screen_width: game_world_width)
@@ -25,6 +27,7 @@ defmodule PongDemoWeb.GameLive do
 
     if connected?(socket) do
       ECSx.ClientEvents.add(player.id, :spawn_player_paddle)
+      ECSx.ClientEvents.add(cpu.id, :spawn_cpu_paddle)
       ECSx.ClientEvents.add(ball_entity_id, :spawn_ball)
       # The first load will now have additional responsibilities
       send(self(), :first_load)
@@ -35,11 +38,12 @@ defmodule PongDemoWeb.GameLive do
 
   def handle_info(:first_load, socket) do
     # Don't start fetching components until after spawn is complete!
-    :ok = wait_for_spawn(socket.assigns.player_entity, socket.assigns.ball_entity)
+    :ok = wait_for_spawn(socket.assigns.player_entity, socket.assigns.cpu_entity, socket.assigns.ball_entity)
 
     socket =
       socket
       |> assign_player_paddle()
+      |> assign_cpu_paddle()
       |> assign_ball()
       |> assign(loading: false)
 
@@ -53,17 +57,18 @@ defmodule PongDemoWeb.GameLive do
     socket =
       socket
       |> assign_player_paddle()
+      |> assign_cpu_paddle()
       |> assign_ball()
 
     {:noreply, socket}
   end
 
-  defp wait_for_spawn(player_entity, ball_entity) do
-    if PlayerSpawned.exists?(player_entity) and PlayerSpawned.exists?(ball_entity) do
+  defp wait_for_spawn(player_entity, cpu_entity, ball_entity) do
+    if PlayerSpawned.exists?(player_entity) and PlayerSpawned.exists?(ball_entity) and PlayerSpawned.exists?(cpu_entity) do
       :ok
     else
       Process.sleep(10)
-      wait_for_spawn(player_entity, ball_entity)
+      wait_for_spawn(player_entity, cpu_entity, ball_entity)
     end
   end
 
@@ -75,6 +80,16 @@ defmodule PongDemoWeb.GameLive do
     image = ImageFile.get(socket.assigns.player_entity)
 
     assign(socket, x_coord: x, y_coord: y, player_paddle_image: image, player_paddle_size: size)
+  end
+
+  defp assign_cpu_paddle(socket) do
+    # This will run every 50ms to keep the client assigns updated
+    x = XPosition.get(socket.assigns.cpu_entity)
+    y = YPosition.get(socket.assigns.cpu_entity)
+    size = YSize.get(socket.assigns.cpu_entity)
+    image = ImageFile.get(socket.assigns.cpu_entity)
+
+    assign(socket, cpu_x_coord: x, cpu_y_coord: y, cpu_paddle_image: image, cpu_paddle_size: size)
   end
 
   defp assign_ball(socket) do
@@ -107,6 +122,16 @@ defmodule PongDemoWeb.GameLive do
             width="1"
             height="1"
             href={~p"/images/#{@player_paddle_image}"}
+          />
+          <% end %>
+
+          <%= for i <- 0..@cpu_paddle_size-1 do %>
+          <image
+            x={@cpu_x_coord}
+            y={@cpu_y_coord + i}
+            width="1"
+            height="1"
+            href={~p"/images/#{@cpu_paddle_image}"}
           />
           <% end %>
 
