@@ -9,7 +9,9 @@ import Config
 
 config :pong_demo,
   ecto_repos: [PongDemo.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  game_world_width: 90,
+  game_world_height: 50
 
 # Configures the endpoint
 config :pong_demo, PongDemoWeb.Endpoint,

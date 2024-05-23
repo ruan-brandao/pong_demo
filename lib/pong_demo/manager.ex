@@ -19,14 +19,20 @@ defmodule PongDemo.Manager do
   # Declare all valid Component types
   def components do
     [
-      # MyApp.Components.SampleComponent
+      PongDemo.Components.PlayerSpawned,
+      PongDemo.Components.ImageFile,
+      PongDemo.Components.YSize,
+      PongDemo.Components.YVelocity,
+      PongDemo.Components.XVelocity,
+      PongDemo.Components.YPosition,
+      PongDemo.Components.XPosition
     ]
   end
 
   # Declare all Systems to run
   def systems do
     [
-      # MyApp.Systems.SampleSystem
+      PongDemo.Systems.ClientEventHandler
     ]
   end
 end
