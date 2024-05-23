@@ -52,4 +52,8 @@ defmodule PongDemo.Systems.ClientEventHandler do
     ImageFile.add(ball, "ball.svg")
     PlayerSpawned.add(ball)
   end
+
+  defp process_one({player, {:move, :north}}), do: YVelocity.update(player, -1)
+  defp process_one({player, {:move, :south}}), do: YVelocity.update(player, 1)
+  defp process_one({player, :stop_move}), do: YVelocity.update(player, 0)
 end
