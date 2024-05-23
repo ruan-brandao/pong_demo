@@ -4,10 +4,12 @@ defmodule PongDemo.Systems.Collision do
   """
   @behaviour ECSx.System
 
+  alias PongDemo.SystemUtils
   alias PongDemo.Components.XVelocity
   alias PongDemo.Components.XPosition
   alias PongDemo.Components.YVelocity
   alias PongDemo.Components.YPosition
+  alias PongDemo.Components.YSize
 
   @game_world_height Application.compile_env(:pong_demo, :game_world_height)
   @game_world_width Application.compile_env(:pong_demo, :game_world_width)
@@ -36,5 +38,14 @@ defmodule PongDemo.Systems.Collision do
     if x_position in [0, max_x_position] do
       XVelocity.update(ball, current_x_velocity * -1)
     end
+
+    # Collision with paddles
+    paddles = YSize.get_all()
+
+    Enum.each(paddles, fn {paddle, _} ->
+      if SystemUtils.distance_between(paddle, ball) < 2 do
+        XVelocity.update(ball, current_x_velocity * -1)
+      end
+    end)
   end
 end

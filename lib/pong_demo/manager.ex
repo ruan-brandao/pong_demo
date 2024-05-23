@@ -33,8 +33,8 @@ defmodule PongDemo.Manager do
   def systems do
     [
       PongDemo.Systems.ClientEventHandler,
-      PongDemo.Systems.Collision,
-      PongDemo.Systems.Movement
+      PongDemo.Systems.Movement,
+      PongDemo.Systems.Collision
     ]
   end
 end

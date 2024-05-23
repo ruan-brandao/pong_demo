@@ -1,6 +1,7 @@
 defmodule PongDemoWeb.GameLive do
   use PongDemoWeb, :live_view
 
+  alias PongDemo.SystemUtils
   alias PongDemo.Components.XPosition
   alias PongDemo.Components.YPosition
   alias PongDemo.Components.YSize
@@ -19,6 +20,7 @@ defmodule PongDemoWeb.GameLive do
       |> assign(player_entity: player.id)
       |> assign(cpu_entity: cpu.id)
       |> assign(ball_entity: ball_entity_id)
+      |> assign(distance: nil)
       |> assign(keys: MapSet.new())
       |> assign(screen_height: game_world_height, screen_width: game_world_width)
       |> assign(x_coord: nil, y_coord: nil)
@@ -96,8 +98,9 @@ defmodule PongDemoWeb.GameLive do
     x = XPosition.get(socket.assigns.ball_entity)
     y = YPosition.get(socket.assigns.ball_entity)
     image = ImageFile.get(socket.assigns.ball_entity)
+    distance = SystemUtils.distance_between(socket.assigns.player_entity, socket.assigns.ball_entity)
 
-    assign(socket, ball_x_coord: x, ball_y_coord: y, ball_image: image)
+    assign(socket, ball_x_coord: x, ball_y_coord: y, ball_image: image, distance: distance)
   end
 
   def handle_event("keydown", %{"key" => key}, socket) do
@@ -182,6 +185,8 @@ defmodule PongDemoWeb.GameLive do
       <p>Player ID: <%= @player_entity %></p>
       <p>Player paddle position: <%= inspect({@x_coord, @y_coord}) %></p>
       <p>Ball position: <%= inspect({@ball_x_coord, @ball_y_coord}) %></p>
+      <p>Distance: <%= @distance %></p>
+
     </div>
     """
   end
