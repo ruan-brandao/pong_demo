@@ -37,6 +37,7 @@ defmodule PongDemo.Manager do
     [
       PongDemo.Systems.ClientEventHandler,
       PongDemo.Systems.Movement,
+      PongDemo.Systems.CpuMovement,
       PongDemo.Systems.Collision,
       PongDemo.Systems.Scoring
     ]
