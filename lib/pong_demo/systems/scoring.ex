@@ -24,27 +24,29 @@ defmodule PongDemo.Systems.Scoring do
     x_position = XPosition.get(ball)
 
     case x_position do
-      0 -> increment_cpu_score()
-      ^max_x_position -> increment_player_score()
+      0 -> increment_cpu_score(ball)
+      ^max_x_position -> increment_player_score(ball)
       _ -> nil
     end
   end
 
-  defp increment_player_score do
+  defp increment_player_score(ball) do
     player_paddles = PlayerPaddle.get_all()
-    increment_scores(player_paddles)
+    increment_scores(player_paddles, ball)
   end
 
-  defp increment_cpu_score do
+  defp increment_cpu_score(ball) do
     cpu_paddles = CpuPaddle.get_all()
-    increment_scores(cpu_paddles)
+    increment_scores(cpu_paddles, ball)
   end
 
-  defp increment_scores(paddles) do
+  defp increment_scores(paddles, ball) do
     Enum.each(paddles, fn paddle ->
       current_score = Score.get(paddle)
 
       Score.update(paddle, current_score + 1)
     end)
+
+    ECSx.ClientEvents.add(ball, :reset_ball)
   end
 end

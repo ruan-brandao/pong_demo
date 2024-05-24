@@ -60,6 +60,15 @@ defmodule PongDemo.Systems.ClientEventHandler do
     PlayerSpawned.add(ball)
   end
 
+  defp process_one({ball, :reset_ball}) do
+    x_velocity = Enum.random([-1, 1])
+    y_velocity = Enum.random([-1, 1])
+    XPosition.update(ball, 45)
+    YPosition.update(ball, 25)
+    XVelocity.update(ball, x_velocity)
+    YVelocity.update(ball, y_velocity)
+  end
+
   defp process_one({player, {:move, :north}}), do: YVelocity.update(player, -1)
   defp process_one({player, {:move, :south}}), do: YVelocity.update(player, 1)
   defp process_one({player, :stop_move}), do: YVelocity.update(player, 0)
