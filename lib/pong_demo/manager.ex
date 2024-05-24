@@ -19,6 +19,9 @@ defmodule PongDemo.Manager do
   # Declare all valid Component types
   def components do
     [
+      PongDemo.Components.CpuPaddle,
+      PongDemo.Components.PlayerPaddle,
+      PongDemo.Components.Score,
       PongDemo.Components.PlayerSpawned,
       PongDemo.Components.ImageFile,
       PongDemo.Components.YSize,
@@ -34,7 +37,8 @@ defmodule PongDemo.Manager do
     [
       PongDemo.Systems.ClientEventHandler,
       PongDemo.Systems.Movement,
-      PongDemo.Systems.Collision
+      PongDemo.Systems.Collision,
+      PongDemo.Systems.Scoring
     ]
   end
 end

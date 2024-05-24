@@ -10,7 +10,10 @@ defmodule PongDemo.Systems.ClientEventHandler do
   alias PongDemo.Components.YVelocity
   alias PongDemo.Components.YSize
   alias PongDemo.Components.ImageFile
+  alias PongDemo.Components.Score
   alias PongDemo.Components.PlayerSpawned
+  alias PongDemo.Components.PlayerPaddle
+  alias PongDemo.Components.CpuPaddle
 
   @impl ECSx.System
   def run do
@@ -25,20 +28,24 @@ defmodule PongDemo.Systems.ClientEventHandler do
     YPosition.add(player, 25)
     YVelocity.add(player, 0)
     YSize.add(player, 5)
+    Score.add(player, 0)
 
+    PlayerPaddle.add(player)
     ImageFile.add(player, "paddle.svg")
     PlayerSpawned.add(player)
   end
 
-  defp process_one({player, :spawn_cpu_paddle}) do
+  defp process_one({cpu, :spawn_cpu_paddle}) do
     # paddles only move vertically, so they don't need an XVelocity
-    XPosition.add(player, 88)
-    YPosition.add(player, 25)
-    YVelocity.add(player, 0)
-    YSize.add(player, 5)
+    XPosition.add(cpu, 88)
+    YPosition.add(cpu, 25)
+    YVelocity.add(cpu, 0)
+    YSize.add(cpu, 5)
+    Score.add(cpu, 0)
 
-    ImageFile.add(player, "paddle.svg")
-    PlayerSpawned.add(player)
+    CpuPaddle.add(cpu)
+    ImageFile.add(cpu, "paddle.svg")
+    PlayerSpawned.add(cpu)
   end
 
   defp process_one({ball, :spawn_ball}) do

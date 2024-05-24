@@ -5,6 +5,7 @@ defmodule PongDemoWeb.GameLive do
   alias PongDemo.Components.XPosition
   alias PongDemo.Components.YPosition
   alias PongDemo.Components.YSize
+  alias PongDemo.Components.Score
   alias PongDemo.Components.ImageFile
   alias PongDemo.Components.PlayerSpawned
 
@@ -25,6 +26,7 @@ defmodule PongDemoWeb.GameLive do
       |> assign(screen_height: game_world_height, screen_width: game_world_width)
       |> assign(x_coord: nil, y_coord: nil)
       |> assign(ball_x_coord: nil, ball_y_coord: nil)
+      |> assign(player_score: nil, cpu_score: nil)
       |> assign(loading: true)
 
     if connected?(socket) do
@@ -79,9 +81,10 @@ defmodule PongDemoWeb.GameLive do
     x = XPosition.get(socket.assigns.player_entity)
     y = YPosition.get(socket.assigns.player_entity)
     size = YSize.get(socket.assigns.player_entity)
+    score = Score.get(socket.assigns.player_entity)
     image = ImageFile.get(socket.assigns.player_entity)
 
-    assign(socket, x_coord: x, y_coord: y, player_paddle_image: image, player_paddle_size: size)
+    assign(socket, x_coord: x, y_coord: y, player_paddle_image: image, player_paddle_size: size, player_score: score)
   end
 
   defp assign_cpu_paddle(socket) do
@@ -89,9 +92,10 @@ defmodule PongDemoWeb.GameLive do
     x = XPosition.get(socket.assigns.cpu_entity)
     y = YPosition.get(socket.assigns.cpu_entity)
     size = YSize.get(socket.assigns.cpu_entity)
+    score = Score.get(socket.assigns.cpu_entity)
     image = ImageFile.get(socket.assigns.cpu_entity)
 
-    assign(socket, cpu_x_coord: x, cpu_y_coord: y, cpu_paddle_image: image, cpu_paddle_size: size)
+    assign(socket, cpu_x_coord: x, cpu_y_coord: y, cpu_paddle_image: image, cpu_paddle_size: size, cpu_score: score)
   end
 
   defp assign_ball(socket) do
@@ -182,6 +186,8 @@ defmodule PongDemoWeb.GameLive do
       </svg>
       <br />
       <p>Game running</p>
+      <p>Player score: <%= @player_score %></p>
+      <p>CPU score: <%= @cpu_score %></p>
       <p>Player ID: <%= @player_entity %></p>
       <p>Player paddle position: <%= inspect({@x_coord, @y_coord}) %></p>
       <p>Ball position: <%= inspect({@ball_x_coord, @ball_y_coord}) %></p>
