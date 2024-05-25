@@ -42,7 +42,12 @@ defmodule PongDemoWeb.GameLive do
 
   def handle_info(:first_load, socket) do
     # Don't start fetching components until after spawn is complete!
-    :ok = wait_for_spawn(socket.assigns.player_entity, socket.assigns.cpu_entity, socket.assigns.ball_entity)
+    :ok =
+      wait_for_spawn(
+        socket.assigns.player_entity,
+        socket.assigns.cpu_entity,
+        socket.assigns.ball_entity
+      )
 
     socket =
       socket
@@ -68,7 +73,8 @@ defmodule PongDemoWeb.GameLive do
   end
 
   defp wait_for_spawn(player_entity, cpu_entity, ball_entity) do
-    if PlayerSpawned.exists?(player_entity) and PlayerSpawned.exists?(ball_entity) and PlayerSpawned.exists?(cpu_entity) do
+    if PlayerSpawned.exists?(player_entity) and PlayerSpawned.exists?(ball_entity) and
+         PlayerSpawned.exists?(cpu_entity) do
       :ok
     else
       Process.sleep(10)
@@ -84,7 +90,13 @@ defmodule PongDemoWeb.GameLive do
     score = Score.get(socket.assigns.player_entity)
     image = ImageFile.get(socket.assigns.player_entity)
 
-    assign(socket, x_coord: x, y_coord: y, player_paddle_image: image, player_paddle_size: size, player_score: score)
+    assign(socket,
+      x_coord: x,
+      y_coord: y,
+      player_paddle_image: image,
+      player_paddle_size: size,
+      player_score: score
+    )
   end
 
   defp assign_cpu_paddle(socket) do
@@ -95,14 +107,22 @@ defmodule PongDemoWeb.GameLive do
     score = Score.get(socket.assigns.cpu_entity)
     image = ImageFile.get(socket.assigns.cpu_entity)
 
-    assign(socket, cpu_x_coord: x, cpu_y_coord: y, cpu_paddle_image: image, cpu_paddle_size: size, cpu_score: score)
+    assign(socket,
+      cpu_x_coord: x,
+      cpu_y_coord: y,
+      cpu_paddle_image: image,
+      cpu_paddle_size: size,
+      cpu_score: score
+    )
   end
 
   defp assign_ball(socket) do
     x = XPosition.get(socket.assigns.ball_entity)
     y = YPosition.get(socket.assigns.ball_entity)
     image = ImageFile.get(socket.assigns.ball_entity)
-    distance = SystemUtils.distance_between(socket.assigns.player_entity, socket.assigns.ball_entity)
+
+    distance =
+      SystemUtils.distance_between(socket.assigns.player_entity, socket.assigns.ball_entity)
 
     assign(socket, ball_x_coord: x, ball_y_coord: y, ball_image: image, distance: distance)
   end
@@ -156,23 +176,23 @@ defmodule PongDemoWeb.GameLive do
           </text>
         <% else %>
           <%= for i <- 0..@player_paddle_size-1 do %>
-          <image
-            x={@x_coord}
-            y={@y_coord + i}
-            width="1"
-            height="1"
-            href={~p"/images/#{@player_paddle_image}"}
-          />
+            <image
+              x={@x_coord}
+              y={@y_coord + i}
+              width="1"
+              height="1"
+              href={~p"/images/#{@player_paddle_image}"}
+            />
           <% end %>
 
           <%= for i <- 0..@cpu_paddle_size-1 do %>
-          <image
-            x={@cpu_x_coord}
-            y={@cpu_y_coord + i}
-            width="1"
-            height="1"
-            href={~p"/images/#{@cpu_paddle_image}"}
-          />
+            <image
+              x={@cpu_x_coord}
+              y={@cpu_y_coord + i}
+              width="1"
+              height="1"
+              href={~p"/images/#{@cpu_paddle_image}"}
+            />
           <% end %>
 
           <image
@@ -192,7 +212,6 @@ defmodule PongDemoWeb.GameLive do
       <p>Player paddle position: <%= inspect({@x_coord, @y_coord}) %></p>
       <p>Ball position: <%= inspect({@ball_x_coord, @ball_y_coord}) %></p>
       <p>Distance: <%= @distance %></p>
-
     </div>
     """
   end

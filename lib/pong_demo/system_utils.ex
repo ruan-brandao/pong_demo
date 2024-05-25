@@ -17,13 +17,14 @@ defmodule PongDemo.SystemUtils do
 
     x = abs(paddle_x - ball_x)
 
-    distance = Enum.reduce(0..paddle_size-1, 0, fn i, acc ->
-      paddle_y = paddle_initial_y + i
+    distance =
+      Enum.reduce(0..(paddle_size - 1), 0, fn i, acc ->
+        paddle_y = paddle_initial_y + i
 
-      y = abs(paddle_y - ball_y)
+        y = abs(paddle_y - ball_y)
 
-      acc + :math.sqrt(x ** 2 + y ** 2)
-    end)
+        acc + :math.sqrt(x ** 2 + y ** 2)
+      end)
 
     distance / paddle_size
   end

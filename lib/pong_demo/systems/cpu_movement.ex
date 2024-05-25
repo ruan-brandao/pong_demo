@@ -19,6 +19,7 @@ defmodule PongDemo.Systems.CpuMovement do
   defp update_paddle_velocity({ball, _}) do
     cpu_paddles = CpuPaddle.get_all()
     ball_position = YPosition.get(ball)
+
     Enum.each(cpu_paddles, fn paddle ->
       paddle_position = YPosition.get(paddle)
 
