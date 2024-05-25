@@ -43,7 +43,7 @@ defmodule PongDemo.Systems.Collision do
     paddles = YSize.get_all()
 
     Enum.each(paddles, fn {paddle, _} ->
-      if SystemUtils.distance_between(paddle, ball) < 2 do
+      if SystemUtils.distance_between(paddle, ball) < 1.5 do
         XVelocity.update(ball, current_x_velocity * -1)
       end
     end)

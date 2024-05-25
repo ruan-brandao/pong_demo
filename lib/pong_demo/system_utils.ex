@@ -8,16 +8,17 @@ defmodule PongDemo.SystemUtils do
   alias PongDemo.Components.YSize
 
   def distance_between(paddle, ball) do
-    paddle_x = XPosition.get(paddle)
     ball_x = XPosition.get(ball)
-    paddle_y = YPosition.get(paddle)
     ball_y = YPosition.get(ball)
+
+    paddle_x = XPosition.get(paddle)
+    paddle_initial_y = YPosition.get(paddle)
     paddle_size = YSize.get(paddle)
 
     x = abs(paddle_x - ball_x)
 
     distance = Enum.reduce(0..paddle_size-1, 0, fn i, acc ->
-      paddle_y = paddle_y + i
+      paddle_y = paddle_initial_y + i
 
       y = abs(paddle_y - ball_y)
 
