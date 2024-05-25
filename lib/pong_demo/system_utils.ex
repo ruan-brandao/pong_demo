@@ -7,23 +7,23 @@ defmodule PongDemo.SystemUtils do
   alias PongDemo.Components.YPosition
   alias PongDemo.Components.YSize
 
-  def distance_between(entity_1, entity_2) do
-    x_1 = XPosition.get(entity_1)
-    x_2 = XPosition.get(entity_2)
-    y_1 = YPosition.get(entity_1)
-    y_2 = YPosition.get(entity_2)
-    y_size = YSize.get(entity_1)
+  def distance_between(paddle, ball) do
+    paddle_x = XPosition.get(paddle)
+    ball_x = XPosition.get(ball)
+    paddle_y = YPosition.get(paddle)
+    ball_y = YPosition.get(ball)
+    paddle_size = YSize.get(paddle)
 
-    x = abs(x_1 - x_2)
+    x = abs(paddle_x - ball_x)
 
-    distance = Enum.reduce(0..y_size-1, 0, fn i, acc ->
-      paddle_y = y_1 + i
+    distance = Enum.reduce(0..paddle_size-1, 0, fn i, acc ->
+      paddle_y = paddle_y + i
 
-      y = abs(paddle_y - y_2)
+      y = abs(paddle_y - ball_y)
 
       acc + :math.sqrt(x ** 2 + y ** 2)
     end)
 
-    distance / y_size
+    distance / paddle_size
   end
 end
